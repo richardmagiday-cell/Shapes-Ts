@@ -1,94 +1,293 @@
-<html>
-  <head>
-    <title>Shape Summarizer</title>
-    <style>
-      body {
-        font-family: sans-serif;
-      }
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Shape Summarizer</title>
+	<link href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Figtree:wght@400;600;700&display=swap" rel="stylesheet">
+	<style>
+		:root
+		{
+			--bg: #18181B;
+			--surface: #232327;
+			--raised: #2E2E34;
+			--raised-hover: #3A3A41;
+			--border-hover: #4A4A55;
+			--text: #E9E9EC;
+			--text-muted: #9A9AA5;
+			--accent: #9DB0CC;
+			--accent-hover: #B3C3DA;
+			--accent-soft: #C9D4E6;
+			--danger: #E0A3A3;
+			--on-accent: #18181B;
 
-      label {
-        display: inline-block;
-        min-width: 11em;
-      }
+			--font-display: 'Caprasimo', Georgia, serif;
+			--font-body: 'Figtree', system-ui, -apple-system, sans-serif;
 
-      #shapeForm div {
-        margin: 0.3em 0;
-      }
+			--r-card: 24px;
+			--r-pill: 999px;
+			--shadow-float: 0 12px 32px rgba(0, 0, 0, .4);
+		}
 
-      table {
-        border-collapse: collapse;
-      }
+		* { box-sizing: border-box; }
 
-      th,
-      td {
-        padding: 0.3em 0.6em;
-      }
-    </style>
-  </head>
+		body
+		{
+			margin: 0;
+			background: var(--bg);
+			color: var(--text);
+			font-family: var(--font-body);
+			font-size: 14px;
+			line-height: 1.5;
+		}
 
-  <body>
-    <h1>Shape Summarizer</h1>
+		button, input, select { font: inherit; }
+		button { cursor: pointer; }
 
-    <div id="shapeForm">
-      <div>
-        <label for="shapeType">Shape type:</label>
-        <select id="shapeType">
-          <option value="rectangle">Rectangle</option>
-          <option value="square">Square</option>
-          <option value="triangle">Triangle</option>
-          <option value="oval">Oval</option>
-          <option value="circle">Circle</option>
-        </select>
-      </div>
+		:focus { outline: none; }
+		:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-      <div id="rectangleFields">
-        <label for="rectangleWidth">Width:</label>
-        <input type="number" id="rectangleWidth" />
-        <br />
-        <label for="rectangleHeight">Height:</label>
-        <input type="number" id="rectangleHeight" />
-      </div>
+		.page
+		{
+			max-width: 720px;
+			margin: 0 auto;
+			padding: 40px 20px 64px;
+			display: flex;
+			flex-direction: column;
+			gap: 20px;
+		}
 
-      <div id="squareFields" hidden>
-        <label for="squareSide">Side length:</label>
-        <input type="number" id="squareSide" />
-      </div>
+		header { text-align: center; }
 
-      <div id="triangleFields" hidden>
-        <label for="triangleA">Side a:</label>
-        <input type="number" id="triangleA" />
-        <br />
-        <label for="triangleB">Side b:</label>
-        <input type="number" id="triangleB" />
-        <br />
-        <label for="triangleC">Side c:</label>
-        <input type="number" id="triangleC" />
-      </div>
+		h1
+		{
+			font-family: var(--font-display);
+			font-weight: 400;
+			font-size: 34px;
+			margin: 0 0 6px;
+		}
 
-      <div id="ovalFields" hidden>
-        <label for="ovalSemiMajor">Semi-major axis:</label>
-        <input type="number" id="ovalSemiMajor" />
-        <br />
-        <label for="ovalSemiMinor">Semi-minor axis:</label>
-        <input type="number" id="ovalSemiMinor" />
-      </div>
+		.lede { margin: 0; color: var(--text-muted); }
 
-      <div id="circleFields" hidden>
-        <label for="circleRadius">Radius:</label>
-        <input type="number" id="circleRadius" />
-      </div>
+		.card
+		{
+			background: var(--surface);
+			border: 1px solid var(--raised);
+			border-radius: var(--r-card);
+			padding: 28px;
+			display: flex;
+			flex-direction: column;
+			gap: 16px;
+		}
 
-      <div>
-        <button id="addShapeButton">Add shape</button>
-        <button id="finishButton">Finish and show statistics</button>
-      </div>
+		.card h2
+		{
+			font-family: var(--font-display);
+			font-weight: 400;
+			font-size: 20px;
+			margin: 0;
+		}
 
-      <p id="statusMessage"></p>
-    </div>
+		.field { display: flex; flex-direction: column; gap: 5px; }
+		.field label { font-size: 12px; color: var(--text-muted); }
 
-    <div id="scriptScratchpad"></div>
-    <canvas id="scriptCanvas" width="800" height="400"></canvas>
+		.input, select.input
+		{
+			width: 100%;
+			padding: 10px 14px;
+			border-radius: var(--r-pill);
+			border: 1px solid var(--raised);
+			background: var(--bg);
+			color: var(--text);
+			transition: border-color .15s ease;
+		}
 
-    <script src="as2-webversion-5532600.ts"></script>
-  </body>
+		.input:hover { border-color: var(--border-hover); }
+		.input:focus-visible { border-color: var(--accent); outline-offset: 0; }
+
+		.field-row
+		{
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 12px;
+		}
+
+		.shape-fields { display: flex; flex-direction: column; gap: 10px; }
+
+		.actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+		.btn
+		{
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			gap: 6px;
+			border: 1px solid transparent;
+			border-radius: var(--r-pill);
+			padding: 10px 20px;
+			font-family: var(--font-display);
+			font-size: 14px;
+			color: var(--text);
+			background: transparent;
+			min-height: 40px;
+			transition: background-color .15s ease, border-color .15s ease;
+		}
+
+		.btn-primary { background: var(--accent); color: var(--on-accent); }
+		.btn-primary:hover { background: var(--accent-hover); }
+		.btn-outline { border-color: var(--raised-hover); }
+		.btn-outline:hover { background: var(--raised); }
+
+		#statusMessage
+		{
+			margin: 0;
+			min-height: 1.2em;
+			font-size: 13px;
+			font-weight: 600;
+			color: var(--accent-soft);
+		}
+
+		#scriptScratchpad:empty { display: none; }
+
+		#scriptScratchpad h2
+		{
+			font-family: var(--font-display);
+			font-weight: 400;
+			font-size: 20px;
+			margin: 0 0 12px;
+		}
+
+		#scriptScratchpad table
+		{
+			width: 100%;
+			border-collapse: collapse;
+			font-size: 13px;
+			margin-bottom: 14px;
+		}
+
+		#scriptScratchpad th,
+		#scriptScratchpad td
+		{
+			text-align: left;
+			padding: 8px 10px;
+			border-bottom: 1px solid var(--raised);
+		}
+
+		#scriptScratchpad th { color: var(--text-muted); font-weight: 600; }
+
+		#scriptScratchpad p { margin: 4px 0; color: var(--text-muted); }
+
+		#scriptCanvas
+		{
+			width: 100%;
+			max-width: 800px;
+			height: auto;
+			aspect-ratio: 800 / 400;
+			border-radius: 16px;
+			border: 1px solid var(--raised);
+			background: #FAFAF7;
+			box-shadow: var(--shadow-float);
+		}
+
+		@media (max-width: 480px)
+		{
+			.field-row { grid-template-columns: 1fr; }
+			.card { padding: 20px; }
+		}
+	</style>
+</head>
+
+<body>
+	<div class="page">
+		<header>
+			<h1>Shape Summarizer</h1>
+			<p class="lede">Add shapes, then finish to see the totals and the drawing.</p>
+		</header>
+
+		<section class="card" id="shapeForm">
+			<h2>Add a shape</h2>
+
+			<div class="field">
+				<label for="shapeType">Shape type</label>
+				<select id="shapeType" class="input">
+					<option value="rectangle">Rectangle</option>
+					<option value="square">Square</option>
+					<option value="triangle">Triangle</option>
+					<option value="oval">Oval</option>
+					<option value="circle">Circle</option>
+				</select>
+			</div>
+
+			<div id="rectangleFields" class="shape-fields">
+				<div class="field-row">
+					<div class="field">
+						<label for="rectangleWidth">Width</label>
+						<input type="number" id="rectangleWidth" class="input">
+					</div>
+					<div class="field">
+						<label for="rectangleHeight">Height</label>
+						<input type="number" id="rectangleHeight" class="input">
+					</div>
+				</div>
+			</div>
+
+			<div id="squareFields" class="shape-fields" hidden>
+				<div class="field">
+					<label for="squareSide">Side length</label>
+					<input type="number" id="squareSide" class="input">
+				</div>
+			</div>
+
+			<div id="triangleFields" class="shape-fields" hidden>
+				<div class="field-row">
+					<div class="field">
+						<label for="triangleA">Side a</label>
+						<input type="number" id="triangleA" class="input">
+					</div>
+					<div class="field">
+						<label for="triangleB">Side b</label>
+						<input type="number" id="triangleB" class="input">
+					</div>
+				</div>
+				<div class="field">
+					<label for="triangleC">Side c</label>
+					<input type="number" id="triangleC" class="input">
+				</div>
+			</div>
+
+			<div id="ovalFields" class="shape-fields" hidden>
+				<div class="field-row">
+					<div class="field">
+						<label for="ovalSemiMajor">Semi-major axis</label>
+						<input type="number" id="ovalSemiMajor" class="input">
+					</div>
+					<div class="field">
+						<label for="ovalSemiMinor">Semi-minor axis</label>
+						<input type="number" id="ovalSemiMinor" class="input">
+					</div>
+				</div>
+			</div>
+
+			<div id="circleFields" class="shape-fields" hidden>
+				<div class="field">
+					<label for="circleRadius">Radius</label>
+					<input type="number" id="circleRadius" class="input">
+				</div>
+			</div>
+
+			<div class="actions">
+				<button id="addShapeButton" class="btn btn-primary">Add shape</button>
+				<button id="finishButton" class="btn btn-outline">Finish and show statistics</button>
+			</div>
+
+			<p id="statusMessage"></p>
+		</section>
+
+		<section class="card">
+			<div id="scriptScratchpad"></div>
+			<canvas id="scriptCanvas" width="800" height="400"></canvas>
+		</section>
+	</div>
+
+	<script src="as2-webversion-5532600.js"></script>
+</body>
 </html>
