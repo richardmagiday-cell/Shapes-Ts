@@ -1,98 +1,94 @@
 <html>
-
-<head>
-    <title>
-        Shape Summarizer
-    </title>
+  <head>
+    <title>Shape Summarizer</title>
     <style>
-        body {
-            font-family: sans-serif;
-        }
+      body {
+        font-family: sans-serif;
+      }
 
-        label {
-            display: inline-block;
-            min-width: 11em;
-        }
+      label {
+        display: inline-block;
+        min-width: 11em;
+      }
 
-        #shapeForm div {
-            margin: 0.3em 0;
-        }
+      #shapeForm div {
+        margin: 0.3em 0;
+      }
 
-        table {
-            border-collapse: collapse;
-        }
+      table {
+        border-collapse: collapse;
+      }
 
-        th,
-        td {
-            padding: 0.3em 0.6em;
-        }
+      th,
+      td {
+        padding: 0.3em 0.6em;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <h1>Shape Summarizer</h1>
 
     <div id="shapeForm">
-        <div>
-            <label for="shapeType">Shape type:</label>
-            <select id="shapeType">
-                <option value="rectangle">Rectangle</option>
-                <option value="square">Square</option>
-                <option value="triangle">Triangle</option>
-                <option value="oval">Oval</option>
-                <option value="circle">Circle</option>
-            </select>
-        </div>
+      <div>
+        <label for="shapeType">Shape type:</label>
+        <select id="shapeType">
+          <option value="rectangle">Rectangle</option>
+          <option value="square">Square</option>
+          <option value="triangle">Triangle</option>
+          <option value="oval">Oval</option>
+          <option value="circle">Circle</option>
+        </select>
+      </div>
 
-        <div id="rectangleFields">
-            <label for="rectangleWidth">Width:</label>
-            <input type="number" id="rectangleWidth">
-            <br>
-            <label for="rectangleHeight">Height:</label>
-            <input type="number" id="rectangleHeight">
-        </div>
+      <div id="rectangleFields">
+        <label for="rectangleWidth">Width:</label>
+        <input type="number" id="rectangleWidth" />
+        <br />
+        <label for="rectangleHeight">Height:</label>
+        <input type="number" id="rectangleHeight" />
+      </div>
 
-        <div id="squareFields" hidden>
-            <label for="squareSide">Side length:</label>
-            <input type="number" id="squareSide">
-        </div>
+      <div id="squareFields" hidden>
+        <label for="squareSide">Side length:</label>
+        <input type="number" id="squareSide" />
+      </div>
 
-        <div id="triangleFields" hidden>
-            <label for="triangleA">Side a:</label>
-            <input type="number" id="triangleA">
-            <br>
-            <label for="triangleB">Side b:</label>
-            <input type="number" id="triangleB">
-            <br>
-            <label for="triangleC">Side c:</label>
-            <input type="number" id="triangleC">
-        </div>
+      <div id="triangleFields" hidden>
+        <label for="triangleA">Side a:</label>
+        <input type="number" id="triangleA" />
+        <br />
+        <label for="triangleB">Side b:</label>
+        <input type="number" id="triangleB" />
+        <br />
+        <label for="triangleC">Side c:</label>
+        <input type="number" id="triangleC" />
+      </div>
 
-        <div id="ovalFields" hidden>
-            <label for="ovalSemiMajor">Semi-major axis:</label>
-            <input type="number" id="ovalSemiMajor">
-            <br>
-            <label for="ovalSemiMinor">Semi-minor axis:</label>
-            <input type="number" id="ovalSemiMinor">
-        </div>
+      <div id="ovalFields" hidden>
+        <label for="ovalSemiMajor">Semi-major axis:</label>
+        <input type="number" id="ovalSemiMajor" />
+        <br />
+        <label for="ovalSemiMinor">Semi-minor axis:</label>
+        <input type="number" id="ovalSemiMinor" />
+      </div>
 
-        <div id="circleFields" hidden>
-            <label for="circleRadius">Radius:</label>
-            <input type="number" id="circleRadius">
-        </div>
+      <div id="circleFields" hidden>
+        <label for="circleRadius">Radius:</label>
+        <input type="number" id="circleRadius" />
+      </div>
 
-        <div>
-            <button id="addShapeButton">Add shape</button>
-            <button id="finishButton">Finish and show statistics</button>
-        </div>
+      <div>
+        <button id="addShapeButton">Add shape</button>
+        <button id="finishButton">Finish and show statistics</button>
+      </div>
 
-        <p id="statusMessage"></p>
+      <p id="statusMessage"></p>
     </div>
 
     <div id="scriptScratchpad"></div>
     <canvas id="scriptCanvas" width="800" height="400"></canvas>
 
     <script src="as2-webversion-5532600.js"></script>
-</body>
-
+  </body>
 </html>
